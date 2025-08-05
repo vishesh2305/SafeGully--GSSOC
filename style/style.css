@@ -6,8 +6,7 @@ body {
   padding: 0;
   color: #333;
   line-height: 1.6;
-  /* Added padding to prevent footer from overlapping content */
-  padding-bottom: 80px; 
+  transition: background-color 0.3s, color 0.3s;
 }
 
 header {
@@ -213,111 +212,111 @@ button:hover {
   background: #c0392b;
 }
 
+/* --- UPDATED FOOTER STYLES --- */
 footer {
-    background-color: #2c3e50; 
-    color: white;
-    padding: 1rem;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-    z-index: 1001; 
+  background-color: #2c3e50; 
+  color: white;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  /* transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out; */
+  position: relative;
+  margin-top: 2rem;
+}
+
+footer.footer-visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px; 
-    margin: 0 auto;
-    padding: 0 1rem;
-    flex-wrap: wrap; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  flex-wrap: wrap;
 }
 
 .footer-content p {
-    margin: 0.5rem;
+  margin: 0.5rem;
 }
 
 .footer-links a {
-    color: white;
-    text-decoration: none;
-    margin: 0 0.75rem;
-    transition: color 0.3s;
+  color: white;
+  text-decoration: none;
+  margin: 0 0.75rem;
+  transition: color 0.3s;
 }
 
 .footer-links a:hover {
-    color: #3498db; 
+  color: #3498db;
 }
 
 @media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-    }
-    body {
-        padding-bottom: 120px; 
-    }
+  .footer-content {
+    flex-direction: column;
+  }
 }
 
-
-
+/* --- DARK MODE STYLES --- */
 body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
 body.dark-mode header,
 body.dark-mode footer {
-    background-color: #1e1e1e;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
 body.dark-mode #hazard-list,
 body.dark-mode #report-form {
-    background-color: #1e1e1e;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 body.dark-mode #hazard-list h3,
 body.dark-mode #report-form h2 {
-    border-bottom-color: #333;
+  border-bottom-color: #333;
 }
 
 body.dark-mode input,
 body.dark-mode textarea,
 body.dark-mode select {
-    background-color: #333;
-    color: #e0e0e0;
-    border-color: #555;
+  background-color: #333;
+  color: #e0e0e0;
+  border-color: #555;
 }
 
 body.dark-mode .hazard-item {
-    background-color: #2a2a2a;
+  background-color: #2a2a2a;
 }
 
 body.dark-mode .hazard-item:hover {
-    background-color: #3a3a3a;
+  background-color: #3a3a3a;
 }
 
 body.dark-mode .hazard-item p {
-    color: #bbb;
+  color: #bbb;
 }
 
 body.dark-mode .filters button.active {
-    background: #3498db;
+  background: #3498db;
 }
 
 body.dark-mode .leaflet-layer,
 body.dark-mode .leaflet-control-zoom-in,
 body.dark-mode .leaflet-control-zoom-out,
 body.dark-mode .leaflet-control-attribution {
-    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
 
-
-
-
+/* --- THEME TOGGLE STYLES --- */
 .theme-toggle-wrapper {
   position: absolute;
   top: 1rem;

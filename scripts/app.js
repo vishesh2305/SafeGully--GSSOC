@@ -1,5 +1,7 @@
+// Map Initialization
 const map = L.map('map').setView([19.0760, 72.8777], 13);
 
+// Tile Layers
 const lightLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 });
@@ -8,7 +10,7 @@ const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x
   attribution: '© OpenStreetMap contributors & © CARTO'
 });
 
-lightLayer.addTo(map);
+lightLayer.addTo(map); // Default layer
 
 const hazardTypes = {
   pothole: { icon: '🕳️', color: '#e67e22' },
@@ -37,7 +39,7 @@ function loadHazards() {
   });
 
   hazards.forEach(hazard => {
-    const marker = L.marker([hazard.lat, hazard.lng], { 
+    const marker = L.marker([hazard.lat, hazard.lng], {
       icon: createCustomIcon(hazard.type),
       opacity: hazard.status === 'fixed' ? 0.5 : 1
     }).addTo(map);
@@ -61,7 +63,7 @@ function loadHazards() {
   updateHeatmap();
 }
 
-map.on('click', function(e) {
+map.on('click', function (e) {
   if (tempMarker) {
     map.removeLayer(tempMarker);
   }
@@ -80,7 +82,7 @@ map.on('click', function(e) {
   showToast('Location selected. Now fill the form.');
 });
 
-document.getElementById('hazard-form').addEventListener('submit', async function(e) {
+document.getElementById('hazard-form').addEventListener('submit', async function (e) {
   e.preventDefault();
 
   if (!lastClickedLatLng) {
@@ -154,8 +156,8 @@ function updateHazardList() {
 function findMarkerByLatLng(latlng) {
   let foundMarker = null;
   map.eachLayer(layer => {
-    if (layer instanceof L.Marker && 
-        layer.getLatLng().equals(latlng)) {
+    if (layer instanceof L.Marker &&
+      layer.getLatLng().equals(latlng)) {
       foundMarker = layer;
     }
   });
@@ -172,7 +174,7 @@ function updateHeatmap() {
   const points = hazards
     .filter(h => h.status !== 'fixed')
     .map(h => [h.lat, h.lng, 0.5]);
-  
+
   if (points.length > 0) {
     L.heatLayer(points, { radius: 25, blur: 15 }).addTo(map);
   }
@@ -186,10 +188,10 @@ function showToast(message) {
   setTimeout(() => toast.remove(), 3000);
 }
 
-window.markFixed = function(id) {
+window.markFixed = function (id) {
   const password = prompt("Enter admin password:");
   if (password === "safe123") {
-    hazards = hazards.map(h => 
+    hazards = hazards.map(h =>
       h.id === id ? { ...h, status: 'fixed' } : h
     );
     localStorage.setItem('hazards', JSON.stringify(hazards));
@@ -213,8 +215,8 @@ document.getElementById('filter-reported').addEventListener('click', () => {
   setActiveFilter('reported');
   map.eachLayer(layer => {
     if (layer instanceof L.Marker) {
-      const hazard = hazards.find(h => 
-        h.lat === layer.getLatLng().lat && 
+      const hazard = hazards.find(h =>
+        h.lat === layer.getLatLng().lat &&
         h.lng === layer.getLatLng().lng
       );
       layer.setOpacity(hazard.status === 'reported' ? 1 : 0.3);
@@ -226,8 +228,8 @@ document.getElementById('filter-fixed').addEventListener('click', () => {
   setActiveFilter('fixed');
   map.eachLayer(layer => {
     if (layer instanceof L.Marker) {
-      const hazard = hazards.find(h => 
-        h.lat === layer.getLatLng().lat && 
+      const hazard = hazards.find(h =>
+        h.lat === layer.getLatLng().lat &&
         h.lng === layer.getLatLng().lng
       );
       layer.setOpacity(hazard.status === 'fixed' ? 1 : 0.3);
@@ -253,32 +255,29 @@ document.getElementById('locate-me').addEventListener('click', () => {
 
 document.getElementById('export-data').addEventListener('click', () => {
   const csv = 'ID,Latitude,Longitude,Type,Location,Description,Status,Date\n' +
-    hazards.map(h => 
+    hazards.map(h =>
       `${h.id},${h.lat},${h.lng},${h.type},"${h.location}","${h.description}",${h.status},${h.timestamp}`
     ).join('\n');
-  
+
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `hazard_reports_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download = `hazard_reports_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   showToast('Data exported successfully');
 });
 
+// THEME HANDLING
 const themeSwitcher = document.getElementById('theme-switcher');
 const body = document.body;
 
 function setMapLayer(theme) {
   if (theme === 'dark') {
-    if (map.hasLayer(lightLayer)) {
-      map.removeLayer(lightLayer);
-    }
+    if (map.hasLayer(lightLayer)) map.removeLayer(lightLayer);
     darkLayer.addTo(map);
   } else {
-    if (map.hasLayer(darkLayer)) {
-      map.removeLayer(darkLayer);
-    }
+    if (map.hasLayer(darkLayer)) map.removeLayer(darkLayer);
     lightLayer.addTo(map);
   }
 }
@@ -294,9 +293,21 @@ themeSwitcher.addEventListener('change', (e) => {
   setTheme(e.target.checked ? 'dark' : 'light');
 });
 
+// ON DOM LOAD: Apply theme and footer scroll logic
 document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem('theme') || 'light';
   setTheme(savedTheme);
+
+  // NEW FOOTER SCROLL LOGIC
+  const footer = document.querySelector('footer');
+  window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+      footer.classList.add('footer-visible');
+    } else {
+      footer.classList.remove('footer-visible');
+    }
+  });
 });
 
+// Initial Load
 loadHazards();
